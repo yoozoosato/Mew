@@ -2713,7 +2713,7 @@ The first member is displayed as a default value."
 
 (defcustom mew-pick-field-list
   '("head=" "to=" "cc=" "subject=" "dcc=" "fcc=" "bcc=" "date="
-    "reply-to=" "followup-to=" "from=" "newsgroups=")
+    "reply-to=" "followup-to=" "from=" "newsgroups=" "message-id=")
   "*A list of key for pick pattern."
   :group 'mew-summary
   :type '(choice (const nil) (repeat string)))

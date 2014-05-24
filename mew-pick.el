@@ -452,7 +452,7 @@ If you want to change the stored keyword, execute this command with '\\[universa
   `(when (and start (< start i))
      (let ((word (substring pattern start i)) key op val)
        ;; Allowing "to,cc"
-       (if (string-match "^\\([-a-z0-9,]+\\)\\(!?==?\\)\\(.+\\)$" word)
+       (if (string-match "^\\([-a-z0-9,]+\\)\\([!?==?|<>]\\)\\(.+\\)$" word)
 	   (progn
 	     (setq key (mew-match-string 1 word))
 	     (setq op  (mew-match-string 2 word))
@@ -793,17 +793,25 @@ If you want to change the stored keyword, execute this command with '\\[universa
       (setq kmd "kMDItemAuthors"))
      ((string= ky "body")
       (setq kmd "kMDItemTextContent"))
+     ((string= ky "to")
+      (setq kmd "kMDItemRecipients"))
+     ((string= ky "message-id")
+      (setq kmd "kMDItemIdentifier"))
+     ((string= ky "date")
+      (setq kmd "kMDItemContentCreationDate"))
      (t
       (error "'%s' is not supported" ky)))
-    (cond
-     ((string= op "=")
+    (cond 
+     ((string= ky "date")
+      (format "%s > \"%s\"" kmd vl))
+	 ((string= op "=")
       (format "%s == \"%s\"wc" kmd vl))
-     ((string= op "==")
+	 ((string= op "==")
       (format "%s == \"%s\"w" kmd vl))
-;;      ((string= op "!=")
-;;       (format "%s != \"%s\"wc" kmd vl))
-;;      ((string= op "!==")
-;;       (format "%s != \"%s\"c" kmd vl))
+     ((string= op "!=")
+      (format "%s != \"%s\"wc" kmd vl))
+     ((string= op "!==")
+      (format "%s != \"%s\"c" kmd vl))
      (t
       (error "'%s' is not supported" op)))))
 
