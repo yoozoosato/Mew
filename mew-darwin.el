@@ -47,7 +47,8 @@
 (defvar mew-prog-ooffice         mew-darwin-exec)
 (defvar mew-prog-rtf             mew-darwin-exec)
 (defvar mew-prog-unzip           mew-darwin-exec)
-
+(defvar mew-prog-mstnef          '(mew-mime-application-ms-tnef
+				   mew-mime-application-ms-tnef-ext))
 ;;;
 ;;; Text/Html, Application/Xml, Image
 ;;;
