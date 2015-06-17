@@ -599,7 +599,9 @@ Address is converted by 'mew-summary-form-extract-addr'. See also
 	      (narrow-to-region beg end)
 	      (base64-decode-region beg end)
 	      (while (re-search-forward "\r+$" nil t)
-		(replace-match "")))
+		(replace-match ""))
+	      (if (re-search-forward "[^\n]\\'" nil t)
+		  (insert "\n")))
 	    (goto-char beg))
 	   ((mew-case-equal cte mew-qp)
 	    (quoted-printable-decode-region beg end mew-cs-binary)))
@@ -875,7 +877,7 @@ non-nil, only headers of messages are cached. If executed with
 
 ;;; Copyright Notice:
 
-;; Copyright (C) 1996-2014 Mew developing team.
+;; Copyright (C) 1996-2015 Mew developing team.
 ;; All rights reserved.
 
 ;; Redistribution and use in source and binary forms, with or without
