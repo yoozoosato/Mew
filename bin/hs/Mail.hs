@@ -2,13 +2,11 @@
 
 module Mail (fileMsg) where
 
-import Control.Applicative
 import Data.Char
 import Data.Maybe
 import Data.Time
 import Msg
 import System.IO
-import System.Locale
 import Text.Parsec
 import Text.Parsec.String
 
@@ -89,7 +87,7 @@ messageDate hdr = maybe "19700101000000" toStr (getValue "date" hdr >>= parseDat
     toStr  = formatTime defaultTimeLocale "%Y%m%d%H%M%S"
 
 parseDate :: String -> Maybe UTCTime
-parseDate cs = parseTime defaultTimeLocale "%a, %e %b %Y %T %z" xs
+parseDate cs = parseTimeM True defaultTimeLocale "%a, %e %b %Y %T %z" xs
   where
     (xs,_) = break (=='(') cs
 

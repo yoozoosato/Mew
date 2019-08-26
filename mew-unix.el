@@ -1,37 +1,9 @@
-;;; mew-unix.el -- MIME content type for UNIX
+;;; mew-unix.el -- Settings for Mew on Unix
 
 ;; Author:  Kazu Yamamoto <Kazu@Mew.org>
 ;; Created: Dec  4, 1997
 
 ;;; Code:
-
-;;;
-;;; Text/Html, Application/Xml
-;;;
-
-(defvar mew-format-html "%s.html")
-(defvar mew-format-xml  "%s.xml")
-
-(defvar mew-unix-browser "firefox")
-(defvar mew-unix-browser-arg '("%s"))
-(defvar mew-unix-browser-form `(,mew-unix-browser ,mew-unix-browser-arg t))
-
-(defvar mew-prog-text/html           'mew-mime-text/html-w3m) ;; See w3m.el
-(defvar mew-prog-text/html-ext       mew-unix-browser-form)
-
-(defvar mew-prog-text/xml            'mew-mime-text/html-w3m) ;; See w3m.el
-(defvar mew-prog-text/xml-ext        mew-unix-browser-form)
-
-(defvar mew-prog-application/xml     nil)
-(defvar mew-prog-application/xml-ext mew-unix-browser-form)
-
-
-;;;
-;;; Image
-;;;
-
-(defvar mew-prog-image/*         'mew-mime-image/*)
-(defvar mew-prog-image/*-ext     '("display" ("-geometry" "+0+0")))
 
 ;;;
 ;;; MIME setting
@@ -56,40 +28,70 @@
 (defvar mew-prog-rfc822-headers  'mew-mime-text/rfc822-headers)
 (defvar mew-prog-external-body   '(mew-mime-external-body mew-mime-external-body-ext))
 (defvar mew-prog-delivery-status 'mew-mime-text/plain)
-(defvar mew-prog-postscript      '("gv" ("-geometry" "+0+0") t))
-(defvar mew-prog-xml2            '(mew-mime-application/xml
-				   mew-mime-application/xml-ext))
-(defvar mew-prog-pgp-keys        '(mew-mime-pgp-keys mew-mime-pgp-keys-ext))
-(defvar mew-prog-oasys           nil)
-(defvar mew-prog-octet-stream    'mew-mime-application/octet-stream)
-
-(defvar mew-prog-visio           'mew-mime-application/octet-stream)
-(defvar mew-prog-mstnef          '(mew-mime-application-ms-tnef
-				   mew-mime-application-ms-tnef-ext))
-(defvar mew-prog-unzip           'mew-mime-application/octet-stream)
-
-;;;
-;;;
-;;;
 
 (defvar mew-prog-application/pdf "pdftotext")
 (defvar mew-prog-pdf-ext         '("xpdf" ("-geometry" "+0+0") t))
 (defvar mew-prog-pdf             `(mew-mime-application/pdf ,mew-prog-pdf-ext))
 
+(defvar mew-prog-postscript      '("gv" ("-geometry" "+0+0") t))
+(defvar mew-prog-oasys           nil)
+(defvar mew-prog-octet-stream    'mew-mime-application/octet-stream)
+(defvar mew-prog-pgp-keys        '(mew-mime-pgp-keys mew-mime-pgp-keys-ext))
+
 (defvar mew-prog-application/rtf "rtf2html")
 (defvar mew-prog-rtf             '(mew-mime-application/rtf
 				   mew-mime-application/rtf-ext))
+
+(defvar mew-prog-xml2            '(mew-mime-application/xml
+				   mew-mime-application/xml-ext))
+(defvar mew-prog-unzip           'mew-mime-application/octet-stream)
+
+;;;
+;;; Text/Html, Application/Xml
+;;;
+
+(defvar mew-format-html "%s.html")
+(defvar mew-format-xml  "%s.xml")
+
+(defvar mew-unix-browser "firefox")
+(defvar mew-unix-browser-arg '("%s"))
+(defvar mew-unix-browser-form `(,mew-unix-browser ,mew-unix-browser-arg t))
+
+(defvar mew-prog-text/html
+  (if (and (fboundp 'shr-render-region)
+	   (fboundp 'libxml-parse-html-region))
+      'shr-render-region
+    'mew-mime-text/html-w3m)) ;; See w3m.el
+(defvar mew-prog-text/html-ext       mew-unix-browser-form)
+
+(defvar mew-prog-text/xml
+  (if (and (fboundp 'shr-render-region)
+	   (fboundp 'libxml-parse-html-region))
+      'shr-render-region
+    'mew-mime-text/html-w3m)) ;; See w3m.el
+(defvar mew-prog-text/xml-ext        mew-unix-browser-form)
+
+(defvar mew-prog-application/xml     nil)
+(defvar mew-prog-application/xml-ext mew-unix-browser-form)
+
+
+;;;
+;;; Image
+;;;
+
+(defvar mew-prog-image/*         'mew-mime-image/*)
+(defvar mew-prog-image/*-ext     '("display" ("-geometry" "+0+0")))
+
 
 ;;;
 ;;; Office
 ;;;
 
-(defvar mew-prog-ooffice "ooffice")
+(defvar mew-prog-ooffice "soffice")
 
 (defvar mew-prog-application/msword "wvHtml")
 (defvar mew-prog-msword-ext mew-prog-ooffice)
 (defvar mew-prog-msword `(mew-mime-application/msword ,mew-prog-msword-ext))
-
 
 (defvar mew-prog-application/msexcel "xlhtml")
 (defvar mew-prog-msexcel-ext mew-prog-ooffice)
@@ -98,6 +100,10 @@
 (defvar mew-prog-application/mspowerpoint "ppthtml")
 (defvar mew-prog-mspowerpoint-ext mew-prog-ooffice)
 (defvar mew-prog-mspowerpoint `(mew-mime-application/mspowerpoint ,mew-prog-mspowerpoint-ext))
+
+(defvar mew-prog-visio           'mew-mime-application/octet-stream)
+(defvar mew-prog-mstnef          '(mew-mime-application-ms-tnef
+				   mew-mime-application-ms-tnef-ext))
 
 ;;;
 ;;; Misc

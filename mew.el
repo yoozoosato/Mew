@@ -2,7 +2,7 @@
 
 ;; Author:  Kazu Yamamoto <Kazu@Mew.org>
 ;; Created: Mar 23, 1994
-;; Revised: May 13, 2015
+;; Revised: Jun  7, 2018
 
 ;;; Commentary:
 
@@ -18,7 +18,7 @@
 ;;; Mew version
 ;;;
 
-(defconst mew-version-number "6.7rc1"
+(defconst mew-version-number "6.8"
   "Version number for this version of Mew.")
 (defconst mew-version (format "Mew version %s" mew-version-number)
   "Version string for this version of Mew.")
@@ -97,10 +97,10 @@ function."
   (mew-summary-send to cc subject))
 
 ;;;###autoload
-(defun mew-user-agent-compose (&optional to subject other-headers continue
-					 switch-function yank-action
-					 send-actions
-					 &rest dummy)
+(defun mew-user-agent-compose (&optional to subject other-headers _continue
+					 switch-function _yank-action
+					 _send-actions
+					 &rest _dummy)
   "Set up message composition draft with Mew.
 This is 'mail-user-agent' entry point to Mew.
 

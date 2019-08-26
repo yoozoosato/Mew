@@ -9,7 +9,7 @@
 
 #include "mew.h"
 
-private char version_message[] = "version 6.6 20140416 Kazu Yamamoto";
+private char version_message[] = "version 6.8 20180607 Kazu Yamamoto";
 
 #ifdef HAVE_UNISTD_H
 # include <sys/types.h>
@@ -64,8 +64,8 @@ private char version_message[] = "version 6.6 20140416 Kazu Yamamoto";
 #define HEAD     "head"
 #define FILE_SEPARATOR '\7'
 
-/* 16k, my experience says that 8k is not enough. */
-#define MAX_HEADER         16384
+/* 64k, now even 16k is not enough. */
+#define MAX_HEADER         65536
 #define MAX_FIELD_LEN          5
 #define MAX_BODY_LEN          20
 #define MAX_FOLDER            16
@@ -262,7 +262,7 @@ ch_folder(char *folder) {
 	switch (c) {
 	case '+':
 		ch_mail_home(Mail_home);
-		if (p == NUL)
+		if (*p == NUL)
 			break;
 		if (chdir(p) != 0) {
 			if( no_fld_flag != 0 )

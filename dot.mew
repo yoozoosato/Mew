@@ -12,6 +12,12 @@
 
 ;; For SMTP
 ;(setq mew-smtp-server "your SMTP server")  ;; if not localhost
+;; Set 587 or submission to use submission port.
+;(setq mew-smtp-port "smtp")
+;; Set 'ipv6 for IPv6
+;(setq mew-smtp-submission-family 'ipv4)
+;; Set a user name to enable SMTP AUTH
+;(setq mew-smtp-user "foo@example.com")
 
 ;; For POP
 ;; (setq mew-pop-user "your POP account")  ;; (user-login-name)
@@ -32,6 +38,27 @@
 ;; For NNTP
 ;; (setq mew-nntp-user "your NNTP account")
 ;(setq mew-nntp-server "your NNTP server")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; POP/SMTP over SSL
+;;;
+;
+; This setting is necessary for Gmail etc.
+; stunnel has to be installed.
+;
+;(setq mew-mail-domain "example.jp")
+;(setq mew-ssl-verify-level 0) ;;; See a comment in mew-ssl.el for more detail
+;(setq mew-prog-ssl "/usr/local/bin/stunnel") ;;; for UNIX
+;(setq mew-prog-ssl "C:/Program Files (x86)/stunnel/tstunnel.exe") ;;; for Windows (instead of using stunnel.exe)
+;(setq mew-smtp-ssl t)
+;(setq mew-smtp-user "foo@example.com")
+;(setq mew-smtp-server "smtp.example.com")
+;(setq mew-pop-ssl t)
+;(setq mew-pop-user "foo@example.com")
+;(setq mew-pop-server "pop.example.com")
+;(setq mew-pop-auth 'pass)
+;(setq mew-use-cached-passwd t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -91,6 +118,19 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
+;;; Using the "eww" browser
+;;;
+;;; shr-render-region is built into Emacs 24.1 and later.
+
+;(setq mew-use-text/html t)		; decode HTML for all folders
+;(setq mew-mime-multipart-alternative-list '("Text/Html" "Text/Plain" ".*"))
+;(if (and (fboundp 'shr-render-region)
+;	 ;; \\[shr-render-region] requires Emacs to be compiled with libxml2. 
+;	 (fboundp 'libxml-parse-html-region))
+;    (setq mew-prog-text/html 'shr-render-region))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
 ;;; Using "w3m" with "emacs-w3m"
 ;;;
 ;;; w3m: please use w3m-m17n based on w3m 0.2.5 (or greater maybe).
@@ -101,6 +141,7 @@
 ;;;     cvs -d :pserver:anonymous@cvs.namazu.org:/storage/cvsroot co emacs-w3m
 
 
+;(setq mew-use-text/html t)		; decode HTML for all folders
 ;(setq mew-mime-multipart-alternative-list '("Text/Html" "Text/Plain" ".*"))
 
 ;(condition-case nil
@@ -139,16 +180,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
-;;; Using OpenOffice.org (openoffice)
-;;;
-
-;(setq mew-prog-msword '("openoffice" nil t))
-;(setq mew-prog-msexcel '("openoffice" nil t))
-;(setq mew-prog-mspowerpoint '("openoffice" nil t))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;; Using StarSuite (soffice)
+;;; Using Apache OpenOffice / LibreOffice / StarSuite
 ;;;
 
 ;(setq mew-prog-msword '("soffice" nil t))

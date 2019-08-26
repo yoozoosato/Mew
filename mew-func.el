@@ -297,9 +297,10 @@ in the context of FUNC."
 
 (defun mew-replace-character (string from to)
   "Replace characters equal to FROM to TO in STRING."
-  (dotimes (cnt (length string) string)
+  (dotimes (cnt (length string))
     (if (char-equal (aref string cnt) from)
-	(aset string cnt to))))
+	(aset string cnt to)))
+  string)
 
 (defun mew-replace-white-space (string)
   "Replace white characters to a space."
@@ -321,7 +322,7 @@ Words are separated by '/' and '-'."
   (let* ((len (length ostr))
 	 (nstr (mew-make-string len))
 	 (topp t) c)
-    (dotimes (i len nstr)
+    (dotimes (i len)
       (setq c (aref ostr i))
       (cond
        (topp
@@ -331,7 +332,8 @@ Words are separated by '/' and '-'."
 	(aset nstr i c)
 	(setq topp t))
        (t
-	(aset nstr i (downcase c)))))))
+	(aset nstr i (downcase c)))))
+    nstr))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -1030,7 +1032,7 @@ and sets buffer-file-coding-system."
   (if fname
       (let ((exist (file-exists-p (expand-file-name fname mew-temp-dir))))
 	(if (and (not exist)
-		 (or (not (featurep 'meadow))
+		 (or (not (eq system-type 'windows-nt))
 		     (string-match "^[ -~]+$" fname)))
 	    (expand-file-name fname mew-temp-dir)
 	  (if (string-match "\\.[ -~]+$" fname)
@@ -1059,8 +1061,9 @@ and sets buffer-file-coding-system."
   (let* ((base (if nump mew-random-base-09 mew-random-base-az))
 	 (baselen (length base))
 	 (ret (mew-make-string len)))
-    (dotimes (i len ret)
-      (aset ret i (aref base (% (mew-random) baselen))))))
+    (dotimes (i len)
+      (aset ret i (aref base (% (mew-random) baselen))))
+    ret))
 
 (defun mew-random-filename (dir len nump &optional suffix)
   (let ((cnt 0) (max 20) ;; ad hoc
@@ -1090,6 +1093,7 @@ and sets buffer-file-coding-system."
   (if (and buf (get-buffer buf)) (kill-buffer buf)))
 
 (defmacro mew-elet (&rest body)
+  (declare (debug (&rest form)))
   `(let ((buffer-read-only nil)
 	 (inhibit-read-only t)
 	 (after-change-functions nil)
@@ -1163,6 +1167,7 @@ and sets buffer-file-coding-system."
 ;;;
 
 (defmacro mew-filter (&rest body)
+  (declare (debug (&rest form)))
   `(let ((pbuf (process-buffer process)) ;; MUST use 'process'
 	 (obuf (buffer-name))
 	 (inhibit-eol-conversion nil)) ;; \r\n as is
@@ -1593,10 +1598,11 @@ by side-effect."
 
 (defun mew-keyword-number-pair (spec)
   (let ((len (length spec)) key ret)
-    (dotimes (i len (nreverse ret))
+    (dotimes (i len)
       (setq key (intern (concat ":" (symbol-name (car spec)))))
       (setq ret (cons (cons key i) ret))
-      (setq spec (cdr spec)))))
+      (setq spec (cdr spec)))
+    (nreverse ret)))
 
 (defmacro mew-defstruct (type &rest spec)
   `(progn

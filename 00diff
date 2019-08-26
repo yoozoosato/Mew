@@ -1,8 +1,14 @@
 			    <Differences>
 			    Kazu Yamamoto
-			     May 13, 2015
+			     June 7, 2018
 
 			   <Important Note>
+
+* mew-smtp-port now supports Unix domain socket.  If it is set to an
+  absolute pathname such as "/var/run/msp.sock", Mew will use it as a
+  Unix domain socket which supports SOCK_STREAM and understands SMTP.
+  The value of mew-smtp-server will be ignored.  This feature requires
+  make-network-process introduced since Emacs 22.
 
 * Configuration in ".mew.el" is simplified between Mew 5.2 and Mew
   6.1.  Almost all old configuration works. However, if you are using
@@ -15,9 +21,22 @@
     - mew-inbox-action-alist
     - All above in mew-config-alist
 
+	      <Differences between Mew 6.8 and Mew 6.7>
+
+* Mew now supports Emacs 24.3 or later only.
+* Supporting stunnel 5.
+* Supporting GnuPG 2.1.23 or later.
+  The command name should be "gpg" instead of "gpg2".
+  Put the following to your "~/.gnupg/gpg.conf".
+        no-auto-key-retrieve
+        auto-key-locate local
+* Using LibreOffice (soffice) on Unix by default.
+
 	      <Differences between Mew 6.7 and Mew 6.6>
 
 * Security fix for GnuPG.
+* GnuPG 2.1 is supported only for master password, not for PGP/MIME
+  and S/MIME.
 
 	      <Differences between Mew 6.6 and Mew 6.5>
 

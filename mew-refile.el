@@ -9,6 +9,7 @@
 (require 'mew)
 
 (defmacro mew-summary-refilable (&rest body)
+  (declare (debug (&rest form)))
   `(mew-pickable
     (mew-summary-not-in-draft
      (mew-summary-local-or-imap
@@ -99,10 +100,10 @@
 ;;; Guess control functions
 ;;;
 
-(defun mew-refile-ctrl-auto-boundary (guess auto)
+(defun mew-refile-ctrl-auto-boundary (_guess auto)
   (if auto "stop"))
 
-(defun mew-refile-ctrl-throw (guess auto)
+(defun mew-refile-ctrl-throw (guess _auto)
   (if guess "stop"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -423,10 +424,11 @@ values."
 			   (and (member csn (car oho)) (throw 'find t))
 			   (setq oho (cdr oho))))))
 	      (throw 'match (setq folder csn)))))
-      (setq mew-refile-msgid-alist
-	    (cons (list msgid folder "??")
-		  (delq (assoc msgid mew-refile-msgid-alist) ;; delq is right
-			mew-refile-msgid-alist))))))
+      (if (and folder (not (string= folder (mew-imap-spam-folder))))
+	  (setq mew-refile-msgid-alist
+		(cons (list msgid folder "??")
+		      (delq (assoc msgid mew-refile-msgid-alist) ;; delq is right
+			    mew-refile-msgid-alist)))))))
 
 (defun mew-refile-guess-by-from-learn (chosen info)
   ;; Create mew-refile-from-alist for mew-refile-guess-by-from.
@@ -456,8 +458,8 @@ values."
 	  (unless (mew-member* csn info)
 	    (throw 'match (setq folder csn)))))
       (run-hooks 'mew-refile-guess-by-from-learn-hook)
-      ;; If candidate was found, I memorize it.
-      (when folder
+      ;; If candidate was found and it is not spam folder for IMAP, I memorize it.
+      (when (and folder (not (string= folder (mew-imap-spam-folder))))
 	(setq mew-refile-from-alist
 	      (cons (cons from folder)
 		    (delq (assoc from mew-refile-from-alist) ;; delq is right
@@ -525,7 +527,7 @@ Return t if exists or created. Otherwise, return nil."
 	      (message "%s has been created" folder)
 	      t)))))))) ;; created
 
-(defun mew-refile-decide-folders (buf msg cur-folders &optional auto exfld)
+(defun mew-refile-decide-folders (buf _msg cur-folders &optional auto exfld)
   ;; This functions returns
   ;;  ((folder1 folder2...)
   ;;   (func1 guess11 guess12...)  ;; for learning

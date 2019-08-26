@@ -16,7 +16,7 @@
   `(unless (boundp ',var-name) (defvar ,var-name nil)))
 
 (defmacro mew-no-warning-defun (func-name)
-  `(unless (fboundp ',func-name) (defun ,func-name(&rest args) nil)))
+  `(unless (fboundp ',func-name) (defun ,func-name(&rest _args) nil)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -70,7 +70,7 @@ requires PTY.")
 
 (if (fboundp 'mouse-region-match)
     (defalias 'mew-mouse-region-p 'mouse-region-match)
-  (defmacro mew-mouse-region-p (&rest args) nil))
+  (defmacro mew-mouse-region-p (&rest _args) nil))
 
 (cond
  ((boundp 'auto-hscroll-mode) ;; Emacs 21.3.50 or later
@@ -86,7 +86,9 @@ requires PTY.")
 
 (eval-when-compile
   (unless (fboundp 'with-no-warnings)
-    (defmacro with-no-warnings (&rest body) `(progn ,@body))))
+    (defmacro with-no-warnings (&rest body)
+      (declare (debug (&rest form)))
+      `(progn ,@body))))
 
 (if (fboundp 'set-process-query-on-exit-flag)
     (defun mew-process-silent-exit (pro)
@@ -171,7 +173,7 @@ requires PTY.")
 (if (and (fboundp 'set-file-times)
 	 (memq system-type '(darwin windows-nt cygwin)))
     (defalias 'mew-set-file-times 'set-file-times)
-  (defmacro mew-set-file-times (&rest args) nil))
+  (defmacro mew-set-file-times (&rest _args) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -221,11 +223,11 @@ requires PTY.")
 
 (if (fboundp 'unix-sync)
     (defalias 'mew-unix-sync 'unix-sync)
-  (defmacro mew-unix-sync (&rest args) nil))
+  (defmacro mew-unix-sync (&rest _args) nil))
 
 (if (fboundp 'mac-set-file-type)
     (defalias 'mew-mac-set-file-type 'mac-set-file-type)
-  (defmacro mew-mac-set-file-type (&rest args) nil))
+  (defmacro mew-mac-set-file-type (&rest _args) nil))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -289,23 +291,23 @@ requires PTY.")
 
 (cond
  ((memq system-type '(windows-nt cygwin))
-  (defun mew-set-file-type (file) ())
+  (defun mew-set-file-type (_file) ())
   (defvar mew-cs-est 'shift_jis)
   (defun mew-focus-frame (frame)
     (if (fboundp 'w32-focus-frame) (w32-focus-frame frame))))
  ((eq system-type 'darwin)
-  (defun mew-set-file-type (file)
+  (defun mew-set-file-type (_file) ;; prevent byte-compile warning
     (unless mew-use-suffix
-      (mew-mac-set-file-type file mew-file-type)))
+      (mew-mac-set-file-type _file mew-file-type)))
   (defvar mew-cs-est 'utf-8)
-  (defun mew-focus-frame (frame)
+  (defun mew-focus-frame (_frame)
     (when focus-follows-mouse
       (set-mouse-position
        (selected-frame) (1- (frame-width)) 0))))
  (t
-  (defun mew-set-file-type (file) ())
+  (defun mew-set-file-type (_file) ())
   (defvar mew-cs-est 'utf-8)
-  (defun mew-focus-frame (frame)
+  (defun mew-focus-frame (_frame)
     (when focus-follows-mouse
       (set-mouse-position
        (selected-frame) (1- (frame-width)) 0)))))
@@ -315,7 +317,7 @@ requires PTY.")
 ;;; Unix/Mac/Win
 ;;;
 
-(cond 
+(cond
  ((>= emacs-major-version 24)
   ;; this must be macro. If implemented as a function, its behavior
   ;; is changed.

@@ -14,6 +14,7 @@
 
 (defmacro mew-summary-prepare-draft (&rest body)
   "Common procedure to prepare a draft."
+  (declare (debug (&rest form)))
   `(progn
      (unwind-protect
 	 (let ((inhibit-quit t))
@@ -130,6 +131,7 @@ the current message is copied to To: in a draft."
     ret))
 
 (defun mew-subject-simplify-ml (str)
+  "Remove leading \"[...]\" and \"(...)\" from subject line."
   (if (string-match "^[[(][^])]+[])][ \t]*" str)
       (substring str (match-end 0))
     str))
